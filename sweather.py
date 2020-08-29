@@ -12,7 +12,7 @@ local_ip = os.getenv("LOCAL") #local testing
 
 
 def locate(ip_address):
-	try:
+	if ip_address:
 		url = 'http://api.ipstack.com/'+ ip_address + '?access_key=' + geo_api + '&fields=city'
 		print(url)
 		response = requests.get(url)
@@ -20,9 +20,9 @@ def locate(ip_address):
 		location = location_data['city']
 		print(location)
 		return location
-	except TypeError:
-		if result is None:
-			result = 'tokyo'
+
+	else:
+		city = str('tokyo')
 
 
 
