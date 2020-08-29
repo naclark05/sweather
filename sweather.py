@@ -20,9 +20,10 @@ def locate(ip_address):
 		location = location_data['city']
 		print(location)
 		return location
+	except TypeError:
+		if result is None:
+			result = 'tokyo'
 
-	except Exception as e:
-		return print(str('tokyo'))
 
 
 
