@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+  	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  	<script type="text/javascript" src="{{ url_for('static', filename='search.js') }}"></script>
+  	<script>
+  		var tempNow = {{ data['temp_now'] }};
+  		var tempMax = {{ data['temp_max'] }};
+  		var tempMin = {{ data['temp_min'] }};
+  		var windSpeed = {{ data['wind'] }};
+  	</script>
+	<title>sweater weather</title>
+</head>
+<body>
+	<h1>weather app</h1>
+	<form method="post">
+		<input type="text" id="searchField" autocomplete="off" name="city" placeholder="Search by city name">
+		<br>
+		<label for="celsius">Convert to metric</label>
+		<input type="checkbox" id="celsius" name="celsius">
+	</form>
+
+	<p>{{ data['city'] }}, {{ data['country'] }}</p>
+	<p>Current temp:</p><p id="tempNow">{{ data['temp_now'] }} F</p>
+	<p>High:</p><p id="tempMax">{{ data['temp_max'] }} F</p>
+	<p>Low:</p><p id="tempMin">{{ data['temp_min'] }} F</p>
+	<p id="humidity">Humidity: {{ data['humidity'] }}%</p>
+	<p>Wind speed:</p><p id="windSpeed">{{ data['wind'] }} mph</p>
+
+	<p>For today, it is recommended that you:</p>
+
+	{% if data['temp_max'] > 90 %}
+		<p>stay inside!</p>
+	{% endif %}
+
+
+	{% if data['wind'] > 15  and data['humidity'] > 50 %}
+		<p>It looks like it will be pretty windy today, wear a windbreaker!</p>
+	{% elif data['wind'] > 15 and data['humidity'] < 50 %}
+		<p>It looks like it will be pretty windy today, wear a windbreaker and bring some chapstick!</p>
+	{% endif %}
+
+	{% if data['humidity'] > 20 and data['temp_max'] > 90 %}
+		<p>dress light! cotton and linen are great choices for high humidity and high temps!</p>
+	{% endif %}
+
+</body>
+</html>
