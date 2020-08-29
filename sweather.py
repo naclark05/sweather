@@ -36,6 +36,7 @@ def sweather():
 
 	else:
 		city = locate(ip_address)
+		print(city)
 
 
 	url = 'http://api.openweathermap.org/data/2.5/forecast?q=' + city + '&units=imperial&appid=' + weather_api
