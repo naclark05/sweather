@@ -14,10 +14,11 @@ local_ip = os.getenv("LOCAL") #local testing
 def locate(ip_address):
 	try:
 		url = 'http://api.ipstack.com/'+ ip_address + '?access_key=' + geo_api + '&fields=city'
+		print(url)
 		response = requests.get(url)
 		location_data = response.json()
 		location = location_data['city']
-
+		print(location)
 		return location
 
 	except Exception as e:
