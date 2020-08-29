@@ -23,6 +23,7 @@ def locate(ip_address):
 
 	else:
 		city = str('tokyo')
+		print(type(city))
 
 
 
