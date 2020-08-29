@@ -13,6 +13,7 @@ local_ip = os.getenv("LOCAL") #local testing
 
 def locate(ip_address):
 	if ip_address:
+		print(ip_address)
 		url = 'http://api.ipstack.com/'+ ip_address + '?access_key=' + geo_api + '&fields=city'
 		print(url)
 		response = requests.get(url)
@@ -32,8 +33,8 @@ def locate(ip_address):
 @app.route('/', methods = ['POST','GET'])
 def sweather():
 	ip_address = str(request.environ['HTTP_X_FORWARDED_FOR'])
-
 	print(type(ip_address))
+
 	if request.method == 'POST':
 		city = request.form['city']
 
