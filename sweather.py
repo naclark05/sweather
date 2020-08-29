@@ -13,7 +13,7 @@ local_ip = os.getenv("LOCAL") #local testing
 
 def locate(ip_address):
 	try:
-		ip_address = 
+		ip_address = str(request.environ['HTTP_X_FORWARDED_FOR'])
 		url = 'http://api.ipstack.com/'+ ip_address + '?access_key=' + geo_api + '&fields=city'
 		print(url)
 		response = requests.get(url)
