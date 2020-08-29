@@ -22,7 +22,7 @@ def locate(ip_address):
 		return location
 
 	except Exception as e:
-		return str('tokyo')
+		return print(str('tokyo'))
 
 
 
