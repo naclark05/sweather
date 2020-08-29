@@ -28,7 +28,7 @@ def locate(ip_address):
 #load api data
 @app.route('/', methods = ['POST','GET'])
 def sweather():
-	ip_address = request.remote_addr
+	ip_address = request.headers['X-Forwarded-For']
 	print(ip_address)
 	if request.method == 'POST':
 		city = request.form['city']
