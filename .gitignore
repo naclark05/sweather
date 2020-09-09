@@ -15,4 +15,5 @@ build/
 *.egg-info/
 gunicorn
 
+.DS_Store
 

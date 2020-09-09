@@ -1,50 +1,154 @@
 <!DOCTYPE html>
 <html>
+{% block head %}
 <head>
 	<meta charset="UTF-8">
   	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  	<!-- bootstrap -->
+  	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+  	<!-- CSS file -->
+  	<link rel="stylesheet" href="{{ url_for('static', filename='css/sweather.css') }}">
+
+  	<!-- icons -->
+  	<link rel="stylesheet" href="{{ url_for('static', filename='css/weather-icons.min.css') }}">
+
+  	<!-- fonts -->
+  	<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Signika:wght@300&display=swap" rel="stylesheet"> 
+
+  	<!-- randomColor.js -->
+ 	<script src="https://cdnjs.cloudflare.com/ajax/libs/randomcolor/0.6.1/randomColor.min.js" integrity="sha512-vPeZ7JCboHcfpqSx5ZD+/jpEhS4JpXxfz9orSvAPPj0EKUVShU2tgy7XkU+oujBJKnWmu4hU7r9MMQNWPfXsYw==" crossorigin="anonymous"></script>
+ 	<!-- ajax -->
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  	<!-- JS file -->
   	<script type="text/javascript" src="{{ url_for('static', filename='search.js') }}"></script>
+  	
   	<script>
+  		// define vars to use in js file
   		var tempNow = {{ data['temp_now'] }};
   		var tempMax = {{ data['temp_max'] }};
   		var tempMin = {{ data['temp_min'] }};
   		var windSpeed = {{ data['wind'] }};
   	</script>
+
 	<title>sweater weather</title>
 </head>
+{% endblock %}
+
+{% block content %}
 <body>
-	<h1>weather app</h1>
-	<form method="post">
-		<input type="text" id="searchField" autocomplete="off" name="city" placeholder="Search by city name">
+	<a href="{{ url_for('sweather') }}"><h1>sweater weather</h1></a>
+	<p>is today's weather comfortable for a sweater?</p>
+
+	<!-- search bar -->
+	<form method="get">
+
+		<!-- search icon -->
+		<svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-search" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+			<path fill-rule="evenodd" d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
+			<path fill-rule="evenodd" d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+		</svg>
+
+		<input type="text" id="autocomplete" autocomplete="off" name="city" placeholder="Search by city" required="true">
 		<br>
-		<label for="celsius">Convert to metric</label>
-		<input type="checkbox" id="celsius" name="celsius">
 	</form>
+		
+	<!-- weather data display -->
+	<section id="weather-data">
+		<div id="wrapper">
+			<!-- convert to celsius switch -->
+			<div class="custom-control custom-switch">
+				<input type="checkbox" class="custom-control-input" id="celsius" name="celsius">
+				<label for="celsius" class="custom-control-label">&deg;C</label>
+			</div>
 
-	<p>{{ data['city'] }}, {{ data['country'] }}</p>
-	<p>Current temp:</p><p id="tempNow">{{ data['temp_now'] }} F</p>
-	<p>High:</p><p id="tempMax">{{ data['temp_max'] }} F</p>
-	<p>Low:</p><p id="tempMin">{{ data['temp_min'] }} F</p>
-	<p id="humidity">Humidity: {{ data['humidity'] }}%</p>
-	<p>Wind speed:</p><p id="windSpeed">{{ data['wind'] }} mph</p>
+			{% if data['state'] %}
+				<h2>{{ data['city'] }}, {{ data['state'] }}</h2>
+			{% else %}
+				<h2>{{ data['city'] }}</h2>
+			{% endif %}
 
-	<p>For today, it is recommended that you:</p>
+			<p id="country"> {{ data['country'] }} </p>
+			<i id="icon" class="wi wi-owm-{{ data['main_id'] }}"></i>
+			<p>{{ data['main'] }}</p>
+			<p>Current temp:<span id="tempNow"> {{ data['temp_now'] }} &deg;F</span></p>
+	
+			<p>High:<span id="tempMax"> {{ data['temp_max'] }} &deg;F</span></p>
+		
+			<p>Low:<span id="tempMin"> {{ data['temp_min'] }} &deg;F</span></p>
+		
+			<p id="humidity">Humidity: {{ data['humidity'] }}%</p>
+	
+			<p>Wind speed:<span id="windSpeed"> {{ data['wind'] }} mph</span></p>
 
-	{% if data['temp_max'] > 90 %}
-		<p>stay inside!</p>
-	{% endif %}
+			<!-- What to wear: temps -->
+			{% if data['temp_max'] > 85 and data['main'] != 'Rain' %}
+			<span>It will be hot today. Shorts and tank tops are a good idea.</span>
+			{% elif data['temp_max'] < 85 and data['temp_min'] > 70 %}
+			<span>It looks like it will be temperate today. A t-shirt and pants or shorts will work.</span>
+			{% elif data['temp_max'] < 70 and data['temp_min'] > 50 %}
+			<span>It will be a little chilly today. Make sure to bring a jacket!</span>
+			{% elif data['temp_max'] < 50 and data['temp_min'] > 32 %}
+			<span>Wow! It will be pretty cold. Pants and layers are a must!</span>
+			{% elif data['temp_max'] < 32 %}
+			<span>It's gonna be freezing! Bundle up and wear your favorite jacket!</span>
+			{% endif %}
 
+			<!-- What to wear: atmosphere -->
+			{% if data['main'] == 'Tornado' %}
+			<span>Are you thinking about going outside? Um, don't. Maybe go find a basement?</span>
+			{% endif %}
 
-	{% if data['wind'] > 15  and data['humidity'] > 50 %}
-		<p>It looks like it will be pretty windy today, wear a windbreaker!</p>
-	{% elif data['wind'] > 15 and data['humidity'] < 50 %}
-		<p>It looks like it will be pretty windy today, wear a windbreaker and bring some chapstick!</p>
-	{% endif %}
+			{% if data['main'] == 'Ash' %}
+			<span>I think the world is ending...</span>
+			{% endif %}
 
-	{% if data['humidity'] > 20 and data['temp_max'] > 90 %}
-		<p>dress light! cotton and linen are great choices for high humidity and high temps!</p>
-	{% endif %}
+			<!-- What to wear: thunder -->
+			{% if data['main'] == 'Thunder' %}
+			<span>For thunder, try to stay indoors. You don't want to get electrocuted, do you?</span>
+			{% endif %}
 
+			<!-- What to wear: rain/drizzle -->
+			{% if data['main'] == 'Rain' or 'rain' in data['desc'] %}
+			<span>It looks like there will be some rain! Make sure to bring an umbrella and a raincoat if you will be outside. Long sleeves will be a good choice too. For pants, try a lightweight and breatheable fabric, such as leggings or rain pants.</span>
+			{% endif %}
+
+			<!-- What to wear: snow -->
+			{% if data['main'] == 'Snow' and 'light' not in data['desc'] %}
+			<span>It looks like there will be snow today! Put on your favorite winter coat and layer, layer, layer! Long sleeves, fleece, and thermals are all great choices. Throw some snow boots on and you'll be well prepared to take on the day. Avoid cotton too, when it gets wet you'll be stuck with it.</span>
+			{% elif data['main'] == 'Snow' and 'light' in data['desc'] %}
+			<span>It looks like there will be snow today! Make sure to layer and wear a light winter coat.</span>
+			{% endif %}
+
+			<!-- What to wear: wind -->
+			{% if data['wind'] > 15  and data['humidity'] > 50 %}
+				<span>It looks like it will be pretty windy today, wear a windbreaker!</span>
+			{% elif data['wind'] > 15 and data['humidity'] < 50 %}
+				<span>It looks like it will be pretty windy today, wear a windbreaker and bring some chapstick!</span>
+			{% endif %}
+
+			<!-- What to wear: humidity -->
+			{% if data['humidity'] > 20 and data['temp_max'] > 90 %}
+				<span>Due to the humidity, dress light! Cotton and linen are great choices for high humidity and high temps!</span>
+			{% endif %}
+
+			<!-- Sweater weather condition 
+			<div id="sweater">
+				<br>
+				<p>Sweater weather?</p>
+				{% if data['temp_max'] < 65 %}
+					<p>Yes!</p>
+				{% else %}
+					<p>No way!</p>
+				{% endif %}
+			</div>
+		-->
+
+		</div>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+	</section>
 </body>
+{% endblock %}
 </html>
