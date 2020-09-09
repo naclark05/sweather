@@ -43,7 +43,7 @@ def locate(ip_address):
 #load api data
 @app.route('/', methods = ['POST','GET'])
 def sweather():
-	ip_address = str(request.environ['HTTP_X_FORWARDED_FOR']) #local_ip -- testing only
+	ip_address = local_ip #str(request.environ['HTTP_X_FORWARDED_FOR']) #local_ip -- testing only
 
 	if request.method == 'GET':
 		city = request.args.get('city')
@@ -116,10 +116,9 @@ def bad_request(e):
 	return render_template('404.html'), 404
 
 #local only 
-'''
+
 if __name__ == '__main__':
    app.run(debug = True)
-'''
 
 
 
